@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularProject</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  </head>
+  <body>
+    <app-root></app-root>
+    <script>
+      // Script que trava a thread principal.
+      //Deve ser resolvido sem modificar esse script
+      const start = performance.now();
+      while (performance.now() - start < 10000) {
+        Math.sqrt(Math.random());
+      }
+    </script>
+  </body>
+</html>
