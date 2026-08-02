@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { delay, generate, Observable, Observer, of, Subject } from 'rxjs';
+import { BehaviorSubject, delay, Observable, Observer } from 'rxjs';
 
 export interface Task {
   id: number;
@@ -11,24 +11,14 @@ export interface Task {
   providedIn: 'root',
 })
 export class TaskService {
-  private tasksSubject = new Subject<Task[]>();
-  tasks$ = this.tasksSubject.asObservable();
-
-  private mockTasks: Task[] = [
+  private tasks: Task[] = [
     { id: 1, title: 'Estudar', completed: false },
     { id: 2, title: 'Fazer compras', completed: false },
     { id: 3, title: 'Praticar exercícios', completed: false },
   ];
 
-  private tasks: Task[] = [];
-
-  constructor() {
-    this.loadTasks();
-  }
-
-  private loadTasks() {
-    this.tasksSubject.next(this.mockTasks);
-  }
+  private tasksSubject = new BehaviorSubject<Task[]>(this.tasks);
+  tasks$ = this.tasksSubject.asObservable();
 
   addTask(title: string) {
     const newTask: Task = {
