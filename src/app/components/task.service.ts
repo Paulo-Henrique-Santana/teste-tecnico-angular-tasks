@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, delay, Observable, Observer } from 'rxjs';
+import { BehaviorSubject, delay, forkJoin, map, Observable, Observer } from 'rxjs';
 
 export interface Task {
   id: number;
@@ -27,12 +27,12 @@ export class TaskService {
       completed: false
     };
 
-    this.callApi(newTask).subscribe(res => {
-      this.callApi2(res).subscribe((res2) => {
-        this.tasks.push(res2);
+    forkJoin([this.callApi(newTask), this.callApi2(newTask)])
+      .pipe(map(([, task]) => task))
+      .subscribe(task => {
+        this.tasks.push(task);
         this.tasksSubject.next(this.tasks);
       });
-    });
   }
 
   private callApi(task: Task): Observable<Task> {
