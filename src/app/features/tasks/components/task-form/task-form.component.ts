@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { TaskService } from './task.service';
+import { TaskService } from '../../../../core/services/task.service';
 import {
   MIN_TASK_TITLE_LENGTH,
   minTitleLength,
   onlyLetters,
   uniqueTitle
-} from './task-title.validators';
+} from '../../validators/task-title.validators';
 
 @Component({
   selector: 'app-task-form',

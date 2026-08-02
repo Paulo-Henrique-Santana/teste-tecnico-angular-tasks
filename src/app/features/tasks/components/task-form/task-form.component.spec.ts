@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { TaskFormComponent } from './task-form.component';
-import { TaskService } from './task.service';
-import { MIN_TASK_TITLE_LENGTH } from './task-title.validators';
+import { TaskService } from '../../../../core/services/task.service';
+import { MIN_TASK_TITLE_LENGTH } from '../../validators/task-title.validators';
 
 describe('TaskFormComponent', () => {
   const VALID_TITLE = 'Ler a documentacao oficial';

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TaskItemComponent } from './task-item.component';
-import { TaskService } from './task.service';
+import { TaskService } from '../../../../core/services/task.service';
 
 describe('TaskItemComponent', () => {
   let fixture: ComponentFixture<TaskItemComponent>;

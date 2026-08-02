@@ -3,10 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header.component';
-import { TaskListComponent } from './components/task-list.component';
-import { TaskFormComponent } from './components/task-form.component';
-import { TaskItemComponent } from './components/task-item.component';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { TaskListComponent } from './features/tasks/components/task-list/task-list.component';
+import { TaskFormComponent } from './features/tasks/components/task-form/task-form.component';
+import { TaskItemComponent } from './features/tasks/components/task-item/task-item.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({

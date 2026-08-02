@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
-import { TaskItemComponent } from './task-item.component';
+import { Task } from '../../../../core/models/task.model';
+import { TaskService } from '../../../../core/services/task.service';
+import { TaskItemComponent } from '../task-item/task-item.component';
 import { TaskListComponent } from './task-list.component';
-import { Task, TaskService } from './task.service';
 
 describe('TaskListComponent', () => {
   const preloaded: Task[] = [
