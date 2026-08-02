@@ -2,7 +2,7 @@ import { WritableSignal, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { TaskStore } from '../../../../core/services/task-store';
+import { TaskService } from '../../../../core/services/task-service';
 import { MIN_TASK_TITLE_LENGTH } from '../../validators/task-title-validators';
 import { TaskForm } from './task-form';
 
@@ -12,16 +12,17 @@ describe('TaskForm', () => {
   let fixture: ComponentFixture<TaskForm>;
   let component: TaskForm;
   let adding: WritableSignal<boolean>;
-  let store: { adding: WritableSignal<boolean>; addTask: ReturnType<typeof vi.fn>; hasTask: ReturnType<typeof vi.fn> };
+  let taskService: { adding: WritableSignal<boolean>; addTask: ReturnType<typeof vi.fn>; hasTask: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     adding = signal(false);
-    store = { adding, addTask: vi.fn(), hasTask: vi.fn().mockReturnValue(false) };
+    taskService = { adding, addTask: vi.fn(), hasTask: vi.fn().mockReturnValue(false) };
 
     await TestBed.configureTestingModule({
       imports: [TaskForm],
-      providers: [{ provide: TaskStore, useValue: store }]
+      providers: [{ provide: TaskService, useValue: taskService }]
     }).compileComponents();
+
 
     fixture = TestBed.createComponent(TaskForm);
     component = fixture.componentInstance;
@@ -50,15 +51,15 @@ describe('TaskForm', () => {
     component.titleControl.setValue(VALID_TITLE);
     await fixture.whenStable();
 
-    expect(store.addTask).not.toHaveBeenCalled();
+    expect(taskService.addTask).not.toHaveBeenCalled();
   });
 
   it('adiciona a task somente no submit, com o título sem espaços nas extremidades', async () => {
     component.titleControl.setValue(`  ${VALID_TITLE}  `);
     await submit();
 
-    expect(store.addTask).toHaveBeenCalledTimes(1);
-    expect(store.addTask).toHaveBeenCalledWith(VALID_TITLE);
+    expect(taskService.addTask).toHaveBeenCalledTimes(1);
+    expect(taskService.addTask).toHaveBeenCalledWith(VALID_TITLE);
   });
 
   it('limpa o campo após adicionar', async () => {
@@ -72,7 +73,7 @@ describe('TaskForm', () => {
   it('não adiciona quando o campo está vazio e exibe erro de obrigatório', async () => {
     await submit();
 
-    expect(store.addTask).not.toHaveBeenCalled();
+    expect(taskService.addTask).not.toHaveBeenCalled();
     expect(errorText()).toBe('Informe o título da task.');
   });
 
@@ -80,7 +81,7 @@ describe('TaskForm', () => {
     component.titleControl.setValue('Ler a documentacao 2026');
     await submit();
 
-    expect(store.addTask).not.toHaveBeenCalled();
+    expect(taskService.addTask).not.toHaveBeenCalled();
     expect(errorText()).toBe('O título deve conter somente letras.');
   });
 
@@ -88,18 +89,18 @@ describe('TaskForm', () => {
     component.titleControl.setValue('Ler documentacao');
     await submit();
 
-    expect(store.addTask).not.toHaveBeenCalled();
+    expect(taskService.addTask).not.toHaveBeenCalled();
     expect(errorText()).toBe(
       `O título deve ter no mínimo ${MIN_TASK_TITLE_LENGTH} caracteres.`
     );
   });
 
   it('não adiciona uma task já existente', async () => {
-    store.hasTask.mockReturnValue(true);
+    taskService.hasTask.mockReturnValue(true);
     component.titleControl.setValue(VALID_TITLE);
     await submit();
 
-    expect(store.addTask).not.toHaveBeenCalled();
+    expect(taskService.addTask).not.toHaveBeenCalled();
     expect(errorText()).toBe('Essa task já foi adicionada.');
   });
 
@@ -119,8 +120,8 @@ describe('TaskForm', () => {
     expect(fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement).toBe(
       form.querySelector('button')
     );
-    expect(store.addTask).toHaveBeenCalledTimes(1);
-    expect(store.addTask).toHaveBeenCalledWith(VALID_TITLE);
+    expect(taskService.addTask).toHaveBeenCalledTimes(1);
+    expect(taskService.addTask).toHaveBeenCalledWith(VALID_TITLE);
   });
 
   describe('loading', () => {
@@ -165,7 +166,7 @@ describe('TaskForm', () => {
       component.titleControl.setValue(VALID_TITLE);
       await submit();
 
-      expect(store.addTask).not.toHaveBeenCalled();
+      expect(taskService.addTask).not.toHaveBeenCalled();
     });
   });
 });

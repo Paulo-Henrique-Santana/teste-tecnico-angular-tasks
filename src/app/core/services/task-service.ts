@@ -13,7 +13,7 @@ const INITIAL_TASKS: readonly Task[] = [
 const API_SUFFIX = '_INFO_API';
 
 @Injectable({ providedIn: 'root' })
-export class TaskStore {
+export class TaskService {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly state = signal<readonly Task[]>(INITIAL_TASKS);

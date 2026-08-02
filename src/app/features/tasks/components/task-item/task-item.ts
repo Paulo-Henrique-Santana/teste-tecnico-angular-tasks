@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
 import { Task } from '../../../../core/models/task';
-import { TaskStore } from '../../../../core/services/task-store';
+import { TaskService } from '../../../../core/services/task-service';
 
 @Component({
   selector: 'app-task-item',
@@ -9,15 +9,16 @@ import { TaskStore } from '../../../../core/services/task-store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskItem {
-  private readonly store = inject(TaskStore);
+  private readonly taskService = inject(TaskService);
 
   readonly task = input.required<Task>();
 
   onToggle(): void {
-    this.store.toggleTaskCompletion(this.task().id);
+    this.taskService.toggleTaskCompletion(this.task().id);
   }
 
   onRemove(): void {
-    this.store.removeTask(this.task().id);
+    this.taskService.removeTask(this.task().id);
   }
 }
+

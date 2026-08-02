@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { TaskStore } from '../../../../core/services/task-store';
+import { TaskService } from '../../../../core/services/task-service';
 import {
   MIN_TASK_TITLE_LENGTH,
   minTitleLength,
@@ -24,9 +24,9 @@ const ERROR_MESSAGES: Record<string, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskForm {
-  private readonly store = inject(TaskStore);
+  private readonly taskService = inject(TaskService);
 
-  readonly adding = this.store.adding;
+  readonly adding = this.taskService.adding;
 
   readonly titleControl = new FormControl('', {
     nonNullable: true,
@@ -34,7 +34,7 @@ export class TaskForm {
       Validators.required,
       onlyLetters,
       minTitleLength,
-      uniqueTitle(title => this.store.hasTask(title))
+      uniqueTitle(title => this.taskService.hasTask(title))
     ]
   });
 
@@ -66,7 +66,8 @@ export class TaskForm {
       return;
     }
 
-    this.store.addTask(this.titleControl.value.trim());
+    this.taskService.addTask(this.titleControl.value.trim());
+
     this.titleControl.reset('');
   }
 }

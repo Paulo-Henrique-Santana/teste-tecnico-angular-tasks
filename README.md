@@ -22,7 +22,7 @@ npm test               # testes unitários (Vitest + jsdom)
 Rodar um arquivo de teste específico ou com cobertura:
 
 ```bash
-npx ng test --no-watch --include='**/task-store.spec.ts'
+npx ng test --no-watch --include='**/task-service.spec.ts'
 npx ng test --no-watch --coverage
 ```
 
@@ -37,7 +37,7 @@ src/app/
 ├── core/                         # modelos e serviços singleton
 │   ├── models/task.ts
 │   └── services/
-│       ├── task-store.ts         # estado das tasks em signals
+│       ├── task-service.ts       # estado das tasks em signals
 │       └── deferred-script-loader.ts
 ├── features/tasks/               # domínio de tarefas
 │   ├── components/
@@ -49,14 +49,14 @@ src/app/
 ```
 
 Os nomes de arquivo seguem o style guide atual do Angular (sem os sufixos `.component`/`.service`),
-com o arquivo nomeado a partir da classe e a intenção no nome (`task-store` guarda estado).
+com o arquivo nomeado a partir da classe e a intenção no nome (`task-service` guarda estado).
 
 ## Decisões de arquitetura
 
 - **Zoneless**: o app não usa `zone.js`. A detecção de mudanças é dirigida por signals, todos os
   componentes são `OnPush` e o bundle inicial fica menor (~45 kB transferidos).
 - **Standalone**: não há `NgModule`. O bootstrap é `bootstrapApplication(App, appConfig)`.
-- **Signals no lugar de `BehaviorSubject`**: o template lê o estado direto do store, sem `subscribe`
+- **Signals no lugar de `BehaviorSubject`**: o template lê o estado direto do service, sem `subscribe`
   manual nem risco de vazamento de inscrição.
 - **Sem router**: a aplicação é de tela única e não tem `<router-outlet>`; o `RouterModule.forChild`
   que existia não tinha rota real e só somava peso ao bundle.
@@ -67,7 +67,7 @@ com o arquivo nomeado a partir da classe e a intenção no nome (`task-store` gu
 
 ### Estado das tasks
 
-`TaskStore` mantém a lista em memória em um `signal` e expõe `tasks` e `adding` como signals
+`TaskService` mantém a lista em memória em um `signal` e expõe `tasks` e `adding` como signals
 somente leitura. As 3 tasks pré-carregadas já fazem parte do estado inicial, então aparecem na
 inicialização sem depender de nenhuma interação.
 

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { Task } from '../../../../core/models/task';
-import { TaskStore } from '../../../../core/services/task-store';
+import { TaskService } from '../../../../core/services/task-service';
 import { TaskList } from './task-list';
 
 describe('TaskList', () => {
@@ -23,11 +23,12 @@ describe('TaskList', () => {
       imports: [TaskList],
       providers: [
         {
-          provide: TaskStore,
+          provide: TaskService,
           useValue: { tasks, toggleTaskCompletion: vi.fn(), removeTask: vi.fn() }
         }
       ]
     }).compileComponents();
+
 
     fixture = TestBed.createComponent(TaskList);
     await fixture.whenStable();
@@ -42,7 +43,7 @@ describe('TaskList', () => {
     expect(titles()).toEqual(['Estudar', 'Fazer compras', 'Praticar exercícios']);
   });
 
-  it('reage a novas tasks publicadas no store', async () => {
+  it('reage a novas tasks publicadas no service', async () => {
     tasks.set([...preloaded, { id: 4, title: 'Ler', completed: false }]);
     await fixture.whenStable();
 
