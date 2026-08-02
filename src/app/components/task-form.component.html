@@ -1,6 +1,9 @@
-<input
-  type="text"
-  (input)="onKeyPress($event)"
-  name="title"
-  placeholder="New Task"
-/>
+<form (ngSubmit)="onSubmit()">
+  <input
+    type="text"
+    [(ngModel)]="title"
+    name="title"
+    placeholder="New Task"
+  />
+  <button type="submit">Adicionar</button>
+</form>

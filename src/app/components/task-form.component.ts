@@ -6,11 +6,15 @@ import { TaskService } from './task.service';
   templateUrl: './task-form.component.html'
 })
 export class TaskFormComponent {
+  title = '';
 
   constructor(private taskService: TaskService) {}
 
-  onKeyPress(value: any) {
-      console.log(value.target.value);  
-      this.taskService.addTask(value.target.value.trim());
+  onSubmit() {
+    const trimmed = this.title.trim();
+    if (trimmed) {
+      this.taskService.addTask(trimmed);
+      this.title = '';
+    }
   }
 }
