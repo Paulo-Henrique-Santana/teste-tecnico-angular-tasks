@@ -20,7 +20,12 @@ export class TaskService {
   private tasksSubject = new BehaviorSubject<Task[]>(this.tasks);
   tasks$ = this.tasksSubject.asObservable();
 
-  addTask(title: string) {
+  hasTask(title: string): boolean {
+    const normalized = this.normalizeTitle(title);
+    return this.tasks.some(task => this.normalizeTitle(task.title) === normalized);
+  }
+
+  addTask(title: string): void {
     const newTask: Task = {
       id: Date.now(),
       title,
@@ -33,6 +38,13 @@ export class TaskService {
         this.tasks.push(task);
         this.tasksSubject.next(this.tasks);
       });
+  }
+
+  private normalizeTitle(title: string): string {
+    return title
+      .trim()
+      .toLocaleLowerCase()
+      .replace(/(_info_api)+$/, '');
   }
 
   private callApi(task: Task): Observable<Task> {

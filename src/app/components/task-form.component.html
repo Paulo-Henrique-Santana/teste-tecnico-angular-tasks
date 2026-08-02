@@ -1,9 +1,11 @@
 <form (ngSubmit)="onSubmit()">
   <input
     type="text"
-    [(ngModel)]="title"
+    [formControl]="titleControl"
     name="title"
     placeholder="New Task"
   />
   <button type="submit">Adicionar</button>
+
+  <p class="field-error" *ngIf="errorMessage as message">{{ message }}</p>
 </form>
