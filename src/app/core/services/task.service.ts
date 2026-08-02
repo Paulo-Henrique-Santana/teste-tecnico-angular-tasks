@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, delay, forkJoin, map, Observable, Observer } from 'rxjs';
+import {
+  BehaviorSubject,
+  delay,
+  finalize,
+  forkJoin,
+  map,
+  Observable,
+  Observer
+} from 'rxjs';
 import { Task } from '../models/task.model';
 
 @Injectable({
@@ -15,6 +23,9 @@ export class TaskService {
   private tasksSubject = new BehaviorSubject<Task[]>(this.tasks);
   tasks$ = this.tasksSubject.asObservable();
 
+  private addingSubject = new BehaviorSubject<boolean>(false);
+  adding$ = this.addingSubject.asObservable();
+
   hasTask(title: string): boolean {
     const normalized = this.normalizeTitle(title);
     return this.tasks.some(task => this.normalizeTitle(task.title) === normalized);
@@ -27,8 +38,13 @@ export class TaskService {
       completed: false
     };
 
+    this.addingSubject.next(true);
+
     forkJoin([this.callApi(newTask), this.callApi2(newTask)])
-      .pipe(map(([, task]) => task))
+      .pipe(
+        map(([, task]) => task),
+        finalize(() => this.addingSubject.next(false))
+      )
       .subscribe(task => {
         this.tasks.push(task);
         this.tasksSubject.next(this.tasks);

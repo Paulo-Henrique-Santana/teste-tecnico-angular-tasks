@@ -53,6 +53,13 @@ Operações: `addTask`, `removeTask`, `toggleTaskCompletion` e `hasTask` (checag
 `addTask` dispara duas chamadas simuladas de API. Elas rodam em paralelo com `forkJoin`, então o
 tempo total é o da mais lenta (2s) em vez da soma delas — os delays em si não foram alterados.
 
+### Loading na adição
+
+`TaskService` também expõe `adding$`, um `BehaviorSubject<boolean>` que fica `true` no início do
+`addTask` e volta a `false` no `finalize`. O `TaskFormComponent` usa esse estado para desabilitar o
+botão, trocar o texto para "Adicionando...", exibir o spinner e ignorar submits durante a chamada —
+esse guard é o que garante uma adição por vez.
+
 ### Validação do título
 
 Validadores em `task-title.validators.ts`, aplicados no `FormControl` do `TaskFormComponent`:

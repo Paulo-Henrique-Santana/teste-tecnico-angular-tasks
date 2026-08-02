@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { TaskService } from '../../../../core/services/task.service';
 import {
   MIN_TASK_TITLE_LENGTH,
@@ -12,8 +13,11 @@ import {
   selector: 'app-task-form',
   templateUrl: './task-form.component.html'
 })
-export class TaskFormComponent {
+export class TaskFormComponent implements OnDestroy {
   readonly titleControl: FormControl<string>;
+  adding = false;
+
+  private readonly addingSubscription: Subscription;
 
   private readonly errorMessages: Record<string, string> = {
     required: 'Informe o título da task.',
@@ -23,6 +27,10 @@ export class TaskFormComponent {
   };
 
   constructor(private taskService: TaskService) {
+    this.addingSubscription = this.taskService.adding$.subscribe(
+      adding => (this.adding = adding)
+    );
+
     this.titleControl = new FormControl('', {
       nonNullable: true,
       validators: [
@@ -45,7 +53,15 @@ export class TaskFormComponent {
     return key ? this.errorMessages[key] : null;
   }
 
+  ngOnDestroy(): void {
+    this.addingSubscription.unsubscribe();
+  }
+
   onSubmit() {
+    if (this.adding) {
+      return;
+    }
+
     this.titleControl.updateValueAndValidity();
 
     if (this.titleControl.invalid) {

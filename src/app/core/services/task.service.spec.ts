@@ -67,6 +67,43 @@ describe('TaskService', () => {
     }));
   });
 
+  describe('adding$', () => {
+    let adding: boolean[];
+
+    beforeEach(() => {
+      adding = [];
+      service.adding$.subscribe(value => adding.push(value));
+    });
+
+    const isAdding = () => adding[adding.length - 1];
+
+    it('inicia como false', () => {
+      expect(adding).toEqual([false]);
+    });
+
+    it('fica true durante a adição e volta para false ao concluir', fakeAsync(() => {
+      service.addTask('Ler a documentação oficial');
+      expect(isAdding()).toBeTrue();
+
+      tick(1999);
+      expect(isAdding()).toBeTrue();
+
+      tick(1);
+      expect(isAdding()).toBeFalse();
+    }));
+
+    it('volta a ficar true em uma nova adição', fakeAsync(() => {
+      service.addTask('Ler a documentação oficial');
+      tick(2000);
+
+      service.addTask('Escrever os testes unitarios');
+      expect(isAdding()).toBeTrue();
+
+      tick(2000);
+      expect(isAdding()).toBeFalse();
+    }));
+  });
+
   it('removeTask remove apenas a task informada', () => {
     service.removeTask(2);
 

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { BehaviorSubject } from 'rxjs';
 import { TaskFormComponent } from './task-form.component';
 import { TaskService } from '../../../../core/services/task.service';
 import { MIN_TASK_TITLE_LENGTH } from '../../validators/task-title.validators';
@@ -11,9 +12,15 @@ describe('TaskFormComponent', () => {
   let fixture: ComponentFixture<TaskFormComponent>;
   let component: TaskFormComponent;
   let taskService: jasmine.SpyObj<TaskService>;
+  let adding: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
-    taskService = jasmine.createSpyObj<TaskService>('TaskService', ['addTask', 'hasTask']);
+    adding = new BehaviorSubject<boolean>(false);
+    taskService = jasmine.createSpyObj<TaskService>(
+      'TaskService',
+      ['addTask', 'hasTask'],
+      { adding$: adding.asObservable() }
+    );
     taskService.hasTask.and.returnValue(false);
 
     await TestBed.configureTestingModule({
@@ -114,5 +121,58 @@ describe('TaskFormComponent', () => {
     fixture.detectChanges();
 
     expect(taskService.addTask).toHaveBeenCalledOnceWith(VALID_TITLE);
+  });
+
+  describe('loading', () => {
+    const button = () =>
+      fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement;
+
+    const status = () => fixture.debugElement.query(By.css('.form-status'));
+
+    const setAdding = (value: boolean) => {
+      adding.next(value);
+      fixture.detectChanges();
+    };
+
+    it('não exibe loading enquanto nenhuma task está sendo adicionada', () => {
+      expect(component.adding).toBeFalse();
+      expect(button().disabled).toBeFalse();
+      expect(button().textContent.trim()).toBe('Adicionar');
+      expect(fixture.debugElement.query(By.css('.spinner'))).toBeNull();
+      expect(status()).toBeNull();
+    });
+
+    it('exibe spinner, texto e desabilita o botão durante a adição', () => {
+      setAdding(true);
+
+      expect(button().disabled).toBeTrue();
+      expect(button().textContent.trim()).toContain('Adicionando...');
+      expect(fixture.debugElement.query(By.css('.spinner'))).not.toBeNull();
+      expect(status().nativeElement.textContent.trim()).toBe('Adicionando task...');
+    });
+
+    it('remove o loading quando a adição termina', () => {
+      setAdding(true);
+      setAdding(false);
+
+      expect(button().disabled).toBeFalse();
+      expect(fixture.debugElement.query(By.css('.spinner'))).toBeNull();
+      expect(status()).toBeNull();
+    });
+
+    it('ignora novos submits enquanto uma task está sendo adicionada', () => {
+      setAdding(true);
+      component.titleControl.setValue(VALID_TITLE);
+      submit();
+
+      expect(taskService.addTask).not.toHaveBeenCalled();
+    });
+
+    it('cancela a inscrição do loading ao destruir o componente', () => {
+      fixture.destroy();
+      adding.next(true);
+
+      expect(component.adding).toBeFalse();
+    });
   });
 });
