@@ -1,0 +1,16 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input type="text" formControlName="title" placeholder="New Task" />
+  <button type="submit" [disabled]="adding()" [attr.aria-busy]="adding()">
+    @if (adding()) {
+      <span class="spinner" aria-hidden="true"></span>
+    }
+    {{ adding() ? 'Adicionando...' : 'Adicionar' }}
+  </button>
+
+  @if (errorMessage(); as message) {
+    <p class="field-error">{{ message }}</p>
+  }
+  @if (adding()) {
+    <p class="form-status" role="status">Adicionando task...</p>
+  }
+</form>

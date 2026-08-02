@@ -1,10 +1,11 @@
 import { FormControl } from '@angular/forms';
+
 import {
   MIN_TASK_TITLE_LENGTH,
   minTitleLength,
   onlyLetters,
   uniqueTitle
-} from './task-title.validators';
+} from './task-title-validators';
 
 describe('task title validators', () => {
   const control = (value: string) => new FormControl(value);
@@ -58,13 +59,13 @@ describe('task title validators', () => {
     });
 
     it('consulta a duplicidade com o valor sem espaços nas extremidades', () => {
-      const isDuplicate = jasmine.createSpy('isDuplicate').and.returnValue(false);
+      const isDuplicate = vi.fn().mockReturnValue(false);
       uniqueTitle(isDuplicate)(control('  Estudar Angular  '));
       expect(isDuplicate).toHaveBeenCalledWith('Estudar Angular');
     });
 
     it('ignora valor vazio', () => {
-      const isDuplicate = jasmine.createSpy('isDuplicate').and.returnValue(true);
+      const isDuplicate = vi.fn().mockReturnValue(true);
       expect(uniqueTitle(isDuplicate)(control(''))).toBeNull();
       expect(isDuplicate).not.toHaveBeenCalled();
     });

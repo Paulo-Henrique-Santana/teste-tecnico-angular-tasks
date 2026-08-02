@@ -1,6 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { ApplicationRef, Inject, Injectable, NgZone } from '@angular/core';
-import { filter, take } from 'rxjs';
+import { ApplicationRef, DOCUMENT, Injectable, inject } from '@angular/core';
 
 export const LEGACY_HEAVY_SCRIPT_URL = 'assets/scripts/legacy-heavy-script.js';
 
@@ -9,22 +7,20 @@ type IdleWindow = Window & {
 };
 
 @Injectable({ providedIn: 'root' })
-export class DeferredScriptLoaderService {
-  constructor(
-    private readonly appRef: ApplicationRef,
-    private readonly zone: NgZone,
-    @Inject(DOCUMENT) private readonly document: Document
-  ) {}
+export class DeferredScriptLoader {
+  private readonly appRef = inject(ApplicationRef);
+  private readonly document = inject(DOCUMENT);
 
-  loadAfterAppStable(url: string): void {
-    this.appRef.isStable
-      .pipe(
-        filter((isStable) => isStable),
-        take(1)
-      )
-      .subscribe(() => {
-        this.zone.runOutsideAngular(() => this.whenIdle(() => this.load(url)));
-      });
+  private readonly requested = new Set<string>();
+
+  async loadAfterAppStable(url: string): Promise<void> {
+    if (this.requested.has(url)) {
+      return;
+    }
+    this.requested.add(url);
+
+    await this.appRef.whenStable();
+    this.whenIdle(() => this.load(url));
   }
 
   private whenIdle(task: () => void): void {
