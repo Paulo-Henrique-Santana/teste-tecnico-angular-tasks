@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.angular
+.vscode
+.idea
+.history
+coverage
+*.md
+npm-debug.log
+yarn-error.log
+.DS_Store
+Thumbs.db
+docker-compose.yml
+.dockerignore

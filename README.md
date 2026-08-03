@@ -28,6 +28,23 @@ npx ng test --no-watch --include='**/task-service.spec.ts'
 npx ng test --no-watch --coverage
 ```
 
+## Docker
+
+Build multi-stage (Node 22 → nginx) serve o SSG estático.
+
+```bash
+docker compose up --build
+# http://localhost:8080      (pt)
+# http://localhost:8080/en-US/  (en-US)
+```
+
+Ou sem Compose:
+
+```bash
+docker build -t angular-tasks .
+docker run --rm -p 8080:80 angular-tasks
+```
+
 ## Estrutura
 
 ```
