@@ -1,4 +1,5 @@
-import { ApplicationRef, DOCUMENT, Injectable, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ApplicationRef, DOCUMENT, Injectable, PLATFORM_ID, inject } from '@angular/core';
 
 export const LEGACY_HEAVY_SCRIPT_URL = 'assets/scripts/legacy-heavy-script.js';
 
@@ -10,11 +11,12 @@ type IdleWindow = Window & {
 export class DeferredScriptLoader {
   private readonly appRef = inject(ApplicationRef);
   private readonly document = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly requested = new Set<string>();
 
   async loadAfterAppStable(url: string): Promise<void> {
-    if (this.requested.has(url)) {
+    if (!isPlatformBrowser(this.platformId) || this.requested.has(url)) {
       return;
     }
     this.requested.add(url);

@@ -1,4 +1,4 @@
-import { ApplicationRef, DOCUMENT } from '@angular/core';
+import { ApplicationRef, DOCUMENT, PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { DeferredScriptLoader } from './deferred-script-loader';
@@ -12,7 +12,7 @@ describe('DeferredScriptLoader', () => {
   let createdScript: HTMLScriptElement;
   let view: { requestIdleCallback?: (callback: () => void) => number; Worker?: unknown };
 
-  function createLoader(): DeferredScriptLoader {
+  function createLoader(platformId: string = 'browser'): DeferredScriptLoader {
     let resolveStable = () => {};
     const promise = new Promise<void>(resolve => (resolveStable = resolve));
     stable = { promise, resolve: () => resolveStable() };
@@ -31,6 +31,7 @@ describe('DeferredScriptLoader', () => {
 
     TestBed.configureTestingModule({
       providers: [
+        { provide: PLATFORM_ID, useValue: platformId },
         { provide: ApplicationRef, useValue: { whenStable: () => stable.promise } },
         {
           provide: DOCUMENT,
@@ -45,6 +46,15 @@ describe('DeferredScriptLoader', () => {
 
     return TestBed.inject(DeferredScriptLoader);
   }
+
+  it('não carrega o script no servidor (SSG/SSR)', async () => {
+    const loader = createLoader('server');
+
+    await loader.loadAfterAppStable(url);
+
+    expect(worker).not.toHaveBeenCalled();
+    expect(appendChild).not.toHaveBeenCalled();
+  });
 
   it('não carrega o script enquanto a aplicação não estiver estável', async () => {
     const loader = createLoader();
