@@ -3,6 +3,6 @@
   @for (task of tasks(); track task.id) {
     <app-task-item [task]="task" />
   } @empty {
-    <li class="empty">Nenhuma task cadastrada.</li>
+    <li class="empty" i18n="@@taskList.empty">Nenhuma tarefa cadastrada.</li>
   }
 </ul>

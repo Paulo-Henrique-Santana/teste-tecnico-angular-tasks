@@ -11,7 +11,7 @@ describe('Header', () => {
     await fixture.whenStable();
 
     expect(fixture.debugElement.query(By.css('h1')).nativeElement.textContent).toContain(
-      'Task Manager'
+      'Gerenciador de Tarefas'
     );
   });
 });

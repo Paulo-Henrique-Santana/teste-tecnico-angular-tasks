@@ -13,5 +13,5 @@ import { TaskItem } from '../task-item/task-item';
 export class TaskList {
   readonly tasks = inject(TaskService).tasks;
 
-  readonly title = 'Título lista';
+  readonly title = $localize`:@@taskList.title:Lista de tarefas`;
 }

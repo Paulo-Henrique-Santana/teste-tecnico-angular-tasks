@@ -16,6 +16,18 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": {
+          "code": "pt",
+          "baseHref": "/"
+        },
+        "locales": {
+          "en-US": {
+            "translation": "src/locale/messages.en-US.xlf",
+            "baseHref": "/en-US/"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -38,7 +50,10 @@
             "outputMode": "static",
             "security": {
               "allowedHosts": []
-            }
+            },
+            "polyfills": [
+              "@angular/localize/init"
+            ]
           },
           "configurations": {
             "production": {
@@ -54,12 +69,26 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "localize": true
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "localize": [
+                "pt"
+              ]
+            },
+            "en-US": {
+              "localize": [
+                "en-US"
+              ]
+            },
+            "pt": {
+              "localize": [
+                "pt"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -72,6 +101,12 @@
             },
             "development": {
               "buildTarget": "angular-project:build:development"
+            },
+            "en-US": {
+              "buildTarget": "angular-project:build:development,en-US"
+            },
+            "pt": {
+              "buildTarget": "angular-project:build:development,pt"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +114,9 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
-            "buildTarget": "angular-project:build"
+            "buildTarget": "angular-project:build",
+            "outputPath": "src/locale",
+            "outFile": "messages.xlf"
           }
         },
         "test": {

@@ -1,5 +1,5 @@
 <li [class.completed]="task().completed">
   <input type="checkbox" (change)="onToggle()" [checked]="task().completed" />
   <span>{{ task().title }}</span>
-  <button type="button" (click)="onRemove()">Remove</button>
+  <button type="button" (click)="onRemove()" i18n="@@taskItem.remove">Remover</button>
 </li>

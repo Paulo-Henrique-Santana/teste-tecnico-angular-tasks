@@ -56,7 +56,7 @@ describe('TaskList', () => {
 
     expect(titles()).toEqual([]);
     expect(fixture.debugElement.query(By.css('.empty')).nativeElement.textContent).toContain(
-      'Nenhuma task cadastrada.'
+      'Nenhuma tarefa cadastrada.'
     );
   });
 });

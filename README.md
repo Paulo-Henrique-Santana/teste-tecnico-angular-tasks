@@ -2,7 +2,7 @@
 
 Aplicação de lista de tarefas usada como desafio técnico. O enunciado original está em [DESAFIO.md](./DESAFIO.md).
 
-Stack: Angular 21 (standalone + zoneless + SSG), TypeScript 5.9, signals, Vitest.
+Stack: Angular 21 (standalone + zoneless + SSG + i18n), TypeScript 5.9, signals, Vitest.
 
 ## Requisitos
 
@@ -13,9 +13,11 @@ Stack: Angular 21 (standalone + zoneless + SSG), TypeScript 5.9, signals, Vitest
 
 ```bash
 npm install
-npm run start:dev      # http://localhost:4200
-npm run start:prod     # ng serve com a configuração de produção
-npm run build          # build SSG estático em dist/angular-project/browser
+npm run start:dev      # http://localhost:4200 (pt)
+npm run start:dev:en   # http://localhost:4200 (en-US)
+npm run start:prod     # produção localizada em pt
+npm run build          # SSG por locale em dist/angular-project/browser
+npm run extract-i18n   # regenera src/locale/messages.xlf
 npm test               # testes unitários (Vitest + jsdom)
 ```
 
@@ -32,6 +34,9 @@ npx ng test --no-watch --coverage
 public/                       # arquivos estáticos servidos na raiz
 └── assets/scripts/legacy-heavy-script.js
 src/
+├── locale/
+│   ├── messages.xlf              # mensagens fonte (pt)
+│   └── messages.en-US.xlf        # tradução en-US
 ├── main.ts                       # bootstrap no browser
 ├── main.server.ts                # bootstrap usado no prerender (SSG)
 └── app/
@@ -73,6 +78,14 @@ com o arquivo nomeado a partir da classe e a intenção no nome (`task-service` 
   descobrir `/`; não há `<router-outlet>`.
 - **Build de produção**: a configuração `production` voltou aos padrões do Angular (otimização,
   hashing e budgets ativos) — antes estava com `optimization: false`.
+- **i18n (escala global)**: o front atende milhões de clientes em vários países. Textos de UI
+  usam `i18n` nos templates e `$localize` no TypeScript (`@angular/localize`). Locale fonte:
+  `pt` (dados de locale do Angular; deploy em `/` com `baseHref: /`). Locale adicional:
+  `en-US` em `/en-US/`. O build gera artefatos SSG por locale em `dist/.../browser/{pt,en-US}` —
+  ideal para CDN com cache imutável e sem custo de tradução em runtime. Novos idiomas:
+  adicionar XLF em `src/locale/` e registrar em `angular.json` → `i18n.locales`. Trade-off: a
+  regra de mínimo de 20 caracteres no título é razoável em idiomas latinos, mas pode ser
+  inadequada para CJK.
 
 ## Funcionamento
 

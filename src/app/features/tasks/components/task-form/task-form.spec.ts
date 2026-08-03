@@ -74,7 +74,7 @@ describe('TaskForm', () => {
     await submit();
 
     expect(taskService.addTask).not.toHaveBeenCalled();
-    expect(errorText()).toBe('Informe o título da task.');
+    expect(errorText()).toBe('Informe o título da tarefa.');
   });
 
   it('não adiciona títulos com caracteres que não são letras', async () => {
@@ -101,7 +101,7 @@ describe('TaskForm', () => {
     await submit();
 
     expect(taskService.addTask).not.toHaveBeenCalled();
-    expect(errorText()).toBe('Essa task já foi adicionada.');
+    expect(errorText()).toBe('Essa tarefa já foi adicionada.');
   });
 
   it('não exibe erro enquanto o campo não foi tocado', async () => {
@@ -149,7 +149,7 @@ describe('TaskForm', () => {
       expect(button().disabled).toBe(true);
       expect(button().textContent?.trim()).toContain('Adicionando...');
       expect(fixture.debugElement.query(By.css('.spinner'))).not.toBeNull();
-      expect(status().nativeElement.textContent.trim()).toBe('Adicionando task...');
+      expect(status().nativeElement.textContent.trim()).toBe('Adicionando tarefa...');
     });
 
     it('remove o loading quando a adição termina', async () => {

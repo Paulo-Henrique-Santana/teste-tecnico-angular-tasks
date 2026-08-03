@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="pt" datatype="plaintext" original="ng2.template" target-language="en-US">
+    <body>
+      <trans-unit id="taskForm.placeholder" datatype="html">
+        <source>Nova tarefa</source>
+        <target>New task</target>
+      </trans-unit>
+      <trans-unit id="taskForm.submit.loading" datatype="html">
+        <source>Adicionando...</source>
+        <target>Adding...</target>
+      </trans-unit>
+      <trans-unit id="taskForm.submit" datatype="html">
+        <source>Adicionar</source>
+        <target>Add</target>
+      </trans-unit>
+      <trans-unit id="taskForm.status.adding" datatype="html">
+        <source>Adicionando tarefa...</source>
+        <target>Adding task...</target>
+      </trans-unit>
+      <trans-unit id="taskForm.error.required" datatype="html">
+        <source>Informe o título da tarefa.</source>
+        <target>Enter the task title.</target>
+      </trans-unit>
+      <trans-unit id="taskForm.error.onlyLetters" datatype="html">
+        <source>O título deve conter somente letras.</source>
+        <target>The title must contain letters only.</target>
+      </trans-unit>
+      <trans-unit id="taskForm.error.minTitleLength" datatype="html">
+        <source>O título deve ter no mínimo <x id="minLength" equiv-text="MIN_TASK_TITLE_LENGTH"/> caracteres.</source>
+        <target>The title must be at least <x id="minLength" equiv-text="MIN_TASK_TITLE_LENGTH"/> characters.</target>
+      </trans-unit>
+      <trans-unit id="taskForm.error.duplicatedTitle" datatype="html">
+        <source>Essa tarefa já foi adicionada.</source>
+        <target>This task has already been added.</target>
+      </trans-unit>
+      <trans-unit id="taskItem.remove" datatype="html">
+        <source>Remover</source>
+        <target>Remove</target>
+      </trans-unit>
+      <trans-unit id="taskList.empty" datatype="html">
+        <source>Nenhuma tarefa cadastrada.</source>
+        <target>No tasks yet.</target>
+      </trans-unit>
+      <trans-unit id="taskList.title" datatype="html">
+        <source>Lista de tarefas</source>
+        <target>Task list</target>
+      </trans-unit>
+      <trans-unit id="header.title" datatype="html">
+        <source>Gerenciador de Tarefas</source>
+        <target>Task Manager</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

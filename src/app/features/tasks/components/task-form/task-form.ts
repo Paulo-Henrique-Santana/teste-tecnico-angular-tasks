@@ -11,10 +11,10 @@ import {
 } from '../../validators/task-title-validators';
 
 const ERROR_MESSAGES: Record<string, string> = {
-  required: 'Informe o título da task.',
-  onlyLetters: 'O título deve conter somente letras.',
-  minTitleLength: `O título deve ter no mínimo ${MIN_TASK_TITLE_LENGTH} caracteres.`,
-  duplicatedTitle: 'Essa task já foi adicionada.'
+  required: $localize`:@@taskForm.error.required:Informe o título da tarefa.`,
+  onlyLetters: $localize`:@@taskForm.error.onlyLetters:O título deve conter somente letras.`,
+  minTitleLength: $localize`:@@taskForm.error.minTitleLength:O título deve ter no mínimo ${MIN_TASK_TITLE_LENGTH}:minLength: caracteres.`,
+  duplicatedTitle: $localize`:@@taskForm.error.duplicatedTitle:Essa tarefa já foi adicionada.`
 };
 
 @Component({
