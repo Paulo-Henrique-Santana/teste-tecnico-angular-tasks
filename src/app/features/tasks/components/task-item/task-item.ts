@@ -6,6 +6,7 @@ import { TaskService } from '../../../../core/services/task-service';
 @Component({
   selector: 'app-task-item',
   templateUrl: './task-item.html',
+  styleUrl: './task-item.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskItem {

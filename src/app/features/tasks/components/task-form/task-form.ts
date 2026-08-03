@@ -21,6 +21,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   selector: 'app-task-form',
   imports: [ReactiveFormsModule],
   templateUrl: './task-form.html',
+  styleUrl: './task-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskForm {

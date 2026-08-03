@@ -7,6 +7,7 @@ import { TaskItem } from '../task-item/task-item';
   selector: 'app-task-list',
   imports: [TaskItem],
   templateUrl: './task-list.html',
+  styleUrl: './task-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskList {

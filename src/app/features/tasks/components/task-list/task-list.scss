@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+li.empty {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fff;
+  border-radius: 4px;
+}
