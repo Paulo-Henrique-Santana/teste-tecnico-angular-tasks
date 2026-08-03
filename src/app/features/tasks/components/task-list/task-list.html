@@ -1,5 +1,5 @@
-<h1>{{ title }}</h1>
-<ul>
+<h2 id="task-list-heading">{{ title }}</h2>
+<ul aria-labelledby="task-list-heading">
   @for (task of tasks(); track task.id) {
     <app-task-item [task]="task" />
   } @empty {

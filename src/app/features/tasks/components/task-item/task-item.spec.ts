@@ -22,10 +22,13 @@ describe('TaskItem', () => {
     await fixture.whenStable();
   });
 
-  it('exibe o título da task', () => {
-    expect(fixture.debugElement.query(By.css('span')).nativeElement.textContent).toContain(
-      'Estudar'
-    );
+  it('exibe o título da task associado ao checkbox', () => {
+    const checkbox = fixture.debugElement.query(By.css('input')).nativeElement as HTMLInputElement;
+    const label = fixture.debugElement.query(By.css('label')).nativeElement as HTMLLabelElement;
+
+    expect(label.textContent).toContain('Estudar');
+    expect(label.htmlFor).toBe(checkbox.id);
+    expect(checkbox.id).toBe('task-7');
   });
 
   it('marca visualmente a task concluída', async () => {
@@ -47,9 +50,13 @@ describe('TaskItem', () => {
   });
 
   it('remove a task ao clicar em remove', () => {
-    fixture.debugElement.query(By.css('button')).nativeElement.click();
+    const button = fixture.debugElement.query(By.css('button')).nativeElement as HTMLButtonElement;
+
+    expect(button.getAttribute('aria-label')).toBe('Remover tarefa Estudar');
+    button.click();
 
     expect(taskService.removeTask).toHaveBeenCalledTimes(1);
     expect(taskService.removeTask).toHaveBeenCalledWith(7);
   });
 });
+

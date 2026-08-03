@@ -24,7 +24,7 @@ button {
   box-sizing: border-box;
   min-width: 9.5rem;
   white-space: nowrap;
-  background-color: #ff4d4d;
+  background-color: #b71c1c;
   color: white;
   border: none;
   border-radius: 3px;
@@ -33,11 +33,11 @@ button {
 }
 
 button:hover {
-  background-color: #ff1a1a;
+  background-color: #8e0000;
 }
 
 button:disabled {
-  background-color: #ffb3b3;
+  background-color: #e57373;
   cursor: progress;
 }
 
@@ -76,6 +76,7 @@ button:disabled {
 
 @media (prefers-reduced-motion: reduce) {
   .spinner {
-    animation-duration: 2s;
+    animation: none;
+    border-color: #fff;
   }
 }

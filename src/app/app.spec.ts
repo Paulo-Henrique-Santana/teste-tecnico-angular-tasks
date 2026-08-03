@@ -24,9 +24,10 @@ describe('App', () => {
     await fixture.whenStable();
 
     expect(fixture.debugElement.query(By.css('app-header'))).toBeTruthy();
-    expect(fixture.debugElement.query(By.css('app-task-form'))).toBeTruthy();
-    expect(fixture.debugElement.query(By.css('app-task-list'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('main app-task-form'))).toBeTruthy();
+    expect(fixture.debugElement.query(By.css('main app-task-list'))).toBeTruthy();
   });
+
 
   it('adia o carregamento do script pesado para depois da inicialização', async () => {
     const fixture = TestBed.createComponent(App);

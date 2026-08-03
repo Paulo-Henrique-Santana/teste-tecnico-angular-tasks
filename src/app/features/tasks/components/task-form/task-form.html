@@ -1,9 +1,13 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label class="sr-only" for="task-title" i18n="@@taskForm.label">Título da tarefa</label>
   <input
+    id="task-title"
     type="text"
     formControlName="title"
     placeholder="Nova tarefa"
     i18n-placeholder="@@taskForm.placeholder"
+    [attr.aria-invalid]="errorMessage() ? true : null"
+    [attr.aria-describedby]="errorMessage() ? 'task-title-error' : null"
   />
   <button type="submit" [disabled]="adding()" [attr.aria-busy]="adding()">
     @if (adding()) {
@@ -15,7 +19,7 @@
   </button>
 
   @if (errorMessage(); as message) {
-    <p class="field-error">{{ message }}</p>
+    <p id="task-title-error" class="field-error" role="alert">{{ message }}</p>
   }
   @if (adding()) {
     <p class="form-status" role="status" i18n="@@taskForm.status.adding">Adicionando tarefa...</p>

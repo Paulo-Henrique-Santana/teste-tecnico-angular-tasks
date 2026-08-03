@@ -73,9 +73,26 @@ describe('TaskForm', () => {
   it('não adiciona quando o campo está vazio e exibe erro de obrigatório', async () => {
     await submit();
 
+    const input = fixture.debugElement.query(By.css('#task-title')).nativeElement as HTMLInputElement;
+    const error = fixture.debugElement.query(By.css('.field-error')).nativeElement as HTMLElement;
+
     expect(taskService.addTask).not.toHaveBeenCalled();
     expect(errorText()).toBe('Informe o título da tarefa.');
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe('task-title-error');
+    expect(error.id).toBe('task-title-error');
+    expect(error.getAttribute('role')).toBe('alert');
   });
+
+  it('associa label acessível ao campo de título', () => {
+    const input = fixture.debugElement.query(By.css('#task-title')).nativeElement as HTMLInputElement;
+    const label = fixture.debugElement.query(By.css('label[for="task-title"]'))
+      .nativeElement as HTMLLabelElement;
+
+    expect(label.textContent?.trim()).toBe('Título da tarefa');
+    expect(input.id).toBe('task-title');
+  });
+
 
   it('não adiciona títulos com caracteres que não são letras', async () => {
     component.titleControl.setValue('Ler a documentacao 2026');

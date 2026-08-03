@@ -36,8 +36,9 @@ describe('TaskList', () => {
 
   const titles = () =>
     fixture.debugElement
-      .queryAll(By.css('app-task-item span'))
+      .queryAll(By.css('app-task-item label'))
       .map(item => item.nativeElement.textContent.trim());
+
 
   it('renderiza as tasks pré-carregadas', () => {
     expect(titles()).toEqual(['Estudar', 'Fazer compras', 'Praticar exercícios']);

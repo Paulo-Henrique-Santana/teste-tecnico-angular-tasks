@@ -17,16 +17,16 @@ li {
   box-sizing: border-box;
 }
 
-li span {
+li label {
   flex: 1 1 auto;
   min-width: 0;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-li.completed span {
+li.completed label {
   text-decoration: line-through;
-  color: #999;
+  color: #595959;
 }
 
 input[type='checkbox'] {
@@ -35,7 +35,7 @@ input[type='checkbox'] {
 
 button {
   flex-shrink: 0;
-  background-color: #ff4d4d;
+  background-color: #b71c1c;
   color: white;
   border: none;
   border-radius: 3px;
@@ -44,5 +44,5 @@ button {
 }
 
 button:hover {
-  background-color: #ff1a1a;
+  background-color: #8e0000;
 }

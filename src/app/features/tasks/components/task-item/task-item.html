@@ -1,5 +1,12 @@
 <li [class.completed]="task().completed">
-  <input type="checkbox" (change)="onToggle()" [checked]="task().completed" />
-  <span>{{ task().title }}</span>
-  <button type="button" (click)="onRemove()" i18n="@@taskItem.remove">Remover</button>
+  <input
+    type="checkbox"
+    [id]="checkboxId()"
+    (change)="onToggle()"
+    [checked]="task().completed"
+  />
+  <label [for]="checkboxId()">{{ task().title }}</label>
+  <button type="button" (click)="onRemove()" [attr.aria-label]="removeAriaLabel()">
+    <ng-container i18n="@@taskItem.remove">Remover</ng-container>
+  </button>
 </li>
