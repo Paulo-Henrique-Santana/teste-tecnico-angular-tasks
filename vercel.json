@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build && node scripts/prepare-static.mjs",
+  "outputDirectory": "dist/static",
+  "rewrites": [
+    { "source": "/en-US/:path*", "destination": "/en-US/index.html" },
+    { "source": "/:path*", "destination": "/index.html" }
+  ]
+}
