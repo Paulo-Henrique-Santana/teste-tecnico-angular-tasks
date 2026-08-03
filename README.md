@@ -2,7 +2,7 @@
 
 Aplicação de lista de tarefas usada como desafio técnico. O enunciado original está em [DESAFIO.md](./DESAFIO.md).
 
-Stack: Angular 21 (standalone + zoneless + SSG + i18n), TypeScript 5.9, signals, Vitest.
+Stack: Angular 21 (standalone, zoneless, SSG, i18n), TypeScript 5.9, signals, Vitest.
 
 ## Requisitos
 
@@ -18,10 +18,10 @@ npm run start:dev:en   # http://localhost:4200 (en-US)
 npm run start:prod     # produção localizada em pt
 npm run build          # SSG por locale em dist/angular-project/browser
 npm run extract-i18n   # regenera src/locale/messages.xlf
-npm test               # testes unitários (Vitest + jsdom)
+npm test               # testes unitários
 ```
 
-Rodar um arquivo de teste específico ou com cobertura:
+Arquivo específico ou com cobertura:
 
 ```bash
 npx ng test --no-watch --include='**/task-service.spec.ts'
@@ -31,110 +31,72 @@ npx ng test --no-watch --coverage
 ## Estrutura
 
 ```
-public/                       # arquivos estáticos servidos na raiz
+public/                       # arquivos estáticos
 └── assets/scripts/legacy-heavy-script.js
 src/
-├── locale/
-│   ├── messages.xlf              # mensagens fonte (pt)
-│   └── messages.en-US.xlf        # tradução en-US
-├── main.ts                       # bootstrap no browser
-├── main.server.ts                # bootstrap usado no prerender (SSG)
+├── locale/                   # traduções (pt e en-US)
+├── main.ts / main.server.ts
 └── app/
-    ├── app.ts / app.html         # componente raiz (standalone)
-    ├── app.config.ts             # providers do browser (+ hidratação)
-    ├── app.config.server.ts      # providers do servidor/prerender
-    ├── app.routes.ts             # rota mínima para o SSG
-    ├── app.routes.server.ts      # RenderMode.Prerender
-    ├── core/                     # modelos e serviços singleton
+    ├── app.ts / app.html
+    ├── app.config.ts / app.config.server.ts
+    ├── app.routes.ts / app.routes.server.ts
+    ├── core/                 # modelos e serviços
     │   ├── models/task.ts
     │   └── services/
-    │       ├── task-service.ts
-    │       └── deferred-script-loader.ts
     ├── features/tasks/
-    │   ├── components/
-    │   │   ├── task-form/
-    │   │   ├── task-list/
-    │   │   └── task-item/
-    │   └── validators/task-title-validators.ts
+    │   ├── components/       # form, list, item
+    │   └── validators/
     └── shared/components/header/
 ```
 
-Os nomes de arquivo seguem o style guide atual do Angular (sem os sufixos `.component`/`.service`),
-com o arquivo nomeado a partir da classe e a intenção no nome (`task-service` guarda estado).
+Nomes de arquivo seguem o style guide atual do Angular (sem sufixos `.component`/`.service`).
 
 ## Decisões de arquitetura
 
-- **Zoneless**: o app não usa `zone.js`. A detecção de mudanças é dirigida por signals, todos os
-  componentes são `OnPush` e o bundle inicial fica menor (~45 kB transferidos).
-- **Standalone**: não há `NgModule`. O bootstrap é `bootstrapApplication(App, appConfig)`.
-- **Signals no lugar de `BehaviorSubject`**: o template lê o estado direto do service, sem `subscribe`
-  manual nem risco de vazamento de inscrição.
-- **SSG (prerender)**: `outputMode: "static"` + `RenderMode.Prerender` em
-  `app.routes.server.ts`. O HTML da tela (header, formulário e as 3 tasks iniciais) é gerado no
-  build e pode ser servido por CDN — melhor FCP em conexão ruim/mobile, sem Node em runtime.
-  Alternativas descartadas: CSR (pior FCP) e SSR por requisição (custo de servidor sem ganho, já
-  que não há dinamismo nem dados por usuário). Hidratação com `withEventReplay()` reaproveita o
-  DOM e não perde cliques feitos antes do JS carregar. O router existe só para o prerender
-  descobrir `/`; não há `<router-outlet>`.
-- **Build de produção**: a configuração `production` voltou aos padrões do Angular (otimização,
-  hashing e budgets ativos) — antes estava com `optimization: false`.
-- **i18n (escala global)**: o front atende milhões de clientes em vários países. Textos de UI
-  usam `i18n` nos templates e `$localize` no TypeScript (`@angular/localize`). Locale fonte:
-  `pt` (dados de locale do Angular; deploy em `/` com `baseHref: /`). Locale adicional:
-  `en-US` em `/en-US/`. O build gera artefatos SSG por locale em `dist/.../browser/{pt,en-US}` —
-  ideal para CDN com cache imutável e sem custo de tradução em runtime. Novos idiomas:
-  adicionar XLF em `src/locale/` e registrar em `angular.json` → `i18n.locales`. Trade-off: a
-  regra de mínimo de 20 caracteres no título é razoável em idiomas latinos, mas pode ser
-  inadequada para CJK.
+- **Zoneless + signals**: sem `zone.js`; a tela reage por signals e o carregamento inicial fica menor.
+- **Standalone**: sem `NgModule`.
+- **SSG**: a página é gerada no build e chega pronta ao usuário — melhor em celular e conexão ruim.
+  Cliques feitos antes do JavaScript terminar de carregar não se perdem.
+- **Build de produção**: otimização, hashing e budgets ativos.
+- **i18n**: textos traduzidos no build. Português em `/`, inglês em `/en-US/`. Novo idioma =
+  adicionar o arquivo de tradução e registrá-lo na configuração.
+
+As respostas às perguntas de design de arquitetura estão em [ARQUITETURA.md](./ARQUITETURA.md).
 
 ## Funcionamento
 
 ### Estado das tasks
 
-`TaskService` mantém a lista em memória em um `signal` e expõe `tasks` e `adding` como signals
-somente leitura. As 3 tasks pré-carregadas já fazem parte do estado inicial, então aparecem na
-inicialização sem depender de nenhuma interação.
+`TaskService` guarda a lista em memória. As 3 tasks iniciais já vêm no estado, então aparecem na
+abertura sem precisar de interação.
 
-Operações: `addTask`, `removeTask`, `toggleTaskCompletion` e `hasTask` (checagem de duplicidade).
-Todas as atualizações são imutáveis (`signal.update`).
+Operações: adicionar, remover, marcar como concluída e checar duplicidade.
 
-`addTask` dispara duas chamadas simuladas de API. Elas rodam em paralelo com `forkJoin`, então o
-tempo total é o da mais lenta (2s) em vez da soma delas — os delays em si não foram alterados.
+Ao adicionar, duas chamadas simuladas de API rodam em paralelo — o tempo total é o da mais lenta
+(2s), sem alterar os delays.
 
 ### Loading na adição
 
-O signal `adding` fica `true` no início do `addTask` e volta a `false` no `finalize`. O `TaskForm`
-usa esse estado para desabilitar o botão, trocar o texto para "Adicionando...", exibir o spinner e
-ignorar submits durante a chamada — esse guard é o que garante uma adição por vez.
+Enquanto a adição está em andamento, o botão fica desabilitado, o texto vira "Adicionando...",
+aparece um spinner e novos submits são ignorados.
 
 ### Validação do título
 
-Validadores em `task-title-validators.ts`, aplicados no `FormControl` tipado do `TaskForm`:
-
-| Validador | Regra |
+| Regra | Detalhe |
 | --- | --- |
-| `required` | título obrigatório |
-| `onlyLetters` | apenas letras e espaços (`\p{L}`, aceita acentos) |
-| `minTitleLength` | mínimo de 20 caracteres |
-| `uniqueTitle` | não permite título já existente |
+| Obrigatório | título não pode ficar vazio |
+| Só letras | apenas letras e espaços (aceita acentos) |
+| Tamanho mínimo | 20 caracteres |
+| Único | não permite título já existente |
 
 A API só é chamada no submit, quando o formulário está válido — nunca a cada digitação.
-A comparação de duplicidade ignora o sufixo `_INFO_API` adicionado pelas chamadas simuladas.
 
-A mensagem de erro é um `computed` alimentado por `toSignal(control.events)`: é o que mantém o
-formulário reativo mesmo com `OnPush` e sem zone.js.
+### Script legado
 
-### Carregamento do script legado
-
-`legacy-heavy-script.js` é pesado e não é necessário no boot. `DeferredScriptLoader` só roda no
-browser (`isPlatformBrowser`), espera o app ficar estável (`ApplicationRef.whenStable()`), aguarda
-um `requestIdleCallback` e então executa o script em um `Web Worker` — com fallback para
-`<script async>` quando `Worker` não está disponível. Assim o prerender SSG não tenta carregar o
-script no Node e a thread principal não trava na inicialização.
+O script pesado não é necessário na abertura. Ele só carrega depois que a tela já está utilizável,
+fora do caminho crítico, para não travar a inicialização.
 
 ## Testes
 
-Cada serviço, validador e componente tem seu `.spec.ts` ao lado do arquivo de origem, rodando em
-Vitest com jsdom. `fakeAsync`/`tick` não existem nesse runner: os testes de tempo usam
-`vi.useFakeTimers()` com `vi.advanceTimersByTimeAsync()`, e a renderização é aguardada com
-`await fixture.whenStable()`.
+Cada serviço, validador e componente tem seu `.spec.ts` ao lado do arquivo de origem (Vitest +
+jsdom).
